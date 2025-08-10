@@ -4,7 +4,6 @@ from django.utils import timezone
 
 
 def user_profile_image_path(instance, filename):
-    # Upload to MEDIA_ROOT/profile_pics/user_<id>/<filename>
     return f'profile_pics/user_{instance.user.id}/{filename}'
 
 

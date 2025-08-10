@@ -1,5 +1,4 @@
 console.log("SCRIPT LOADED");
-// Global variables
 let userMenuVisible = false;
 
 function toggleUserMenu() {
@@ -22,7 +21,6 @@ function toggleUserMenu() {
     }
 }
 
-// Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function () {
     console.log('DOM loaded, initializing menu');
 

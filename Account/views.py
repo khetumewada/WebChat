@@ -19,7 +19,6 @@ from django.utils.encoding import force_bytes, force_str
 def generate_otp():
     return str(random.randint(100000, 999999))
 
-
 def send_otp_view(request):
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -131,7 +130,7 @@ def logout_view(request):
         profile.save()
 
     except UserProfile.DoesNotExist:
-        pass  # Not critical
+        pass
 
     logout(request)
     messages.success(request, 'You have been log-in successfully.')
@@ -152,7 +151,6 @@ def profile_view(request):
             new_email = form.cleaned_data.get('email', '').strip()
             orig_email = user.email
 
-            # Directly update email with NO verification
             if new_email != orig_email:
                 user.email = new_email
 

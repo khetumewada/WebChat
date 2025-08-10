@@ -54,19 +54,19 @@ Follow these steps to set up the project locally:
 - Join a chat room and start messaging in real-time.
 - Enjoy a responsive chat interface with a modern design.
 
-[//]: # (## Contributing)
+## Contributing
 
-[//]: # (Contributions are welcome! Please follow these steps to contribute:)
+Contributions are welcome! Please follow these steps to contribute:
 
-[//]: # (1. Fork the repository.)
+1. Fork the repository.
 
-[//]: # (2. Create a new branch &#40;`git checkout -b feature/YourFeature`&#41;.)
+2. Create a new branch (`git checkout -b feature/YourFeature`).
 
-[//]: # (3. Make your changes and commit them &#40;`git commit -m 'Add some feature'`&#41;.)
+3. Make your changes and commit them (`git commit -m 'Add some feature'`).
 
-[//]: # (4. Push to the branch &#40;`git push origin feature/YourFeature`&#41;.)
+4. Push to the branch (`git push origin feature/YourFeature`).
 
-[//]: # (5. Open a pull request.)
+5. Open a pull request.
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 ## Acknowledgments

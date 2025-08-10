@@ -40,7 +40,7 @@ def format_message_time(timestamp):
                 # Fallback for typical Django db datetime string: 'YYYY-MM-DD HH:MM:SS'
                 timestamp = datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S')
             except Exception:
-                return timestamp  # If parsing fails, just return as is
+                return timestamp
 
     if hasattr(timestamp, 'date') and timestamp.date() == now.date():
         return timestamp.strftime('%I:%M %p').lstrip('0')

@@ -133,5 +133,4 @@ def search_users(request):
             })
 
         return JsonResponse({'users': users_data})
-
     return JsonResponse({'users': []})
