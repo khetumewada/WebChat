@@ -40,13 +40,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+
     'channels',
     'ChatApp',
     'Account',
-    'social_django',
+
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
 
 MIDDLEWARE = [
@@ -74,9 +77,6 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
 
-                'social_django.context_processors.backends',
-                'social_django.context_processors.login_redirect'
-
             ],
         },
     },
@@ -89,10 +89,10 @@ ASGI_APPLICATION = 'WebChat.asgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 # Database configuration
-if os.getenv("DATABASE_URL"):
+if os.getenv("DATABASE_URL", default=''):
     # Use PostgreSQL when DATABASE_URL is present (Render)
     DATABASES = {
-        'default': dj_database_url.config(default=config('DATABASE_URL'), conn_max_age=600)
+        'default': dj_database_url.config(default=config("DATABASE_URL"), conn_max_age=600)
     }
 else:
     DATABASES = {
@@ -146,41 +146,41 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTHENTICATION_BACKENDS = (
-    'social_core.backends.google.GoogleOAuth2',
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 )
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = config('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY', default='')
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = config('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET', default='')
+SITE_ID = 1
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/home/'
+LOGOUT_REDIRECT_URL = '/accounts/welcome/'
 
-SOCIAL_AUTH_PIPELINE = (
-    'social_core.pipeline.social_auth.social_details',
-    'social_core.pipeline.social_auth.social_uid',
-    'social_core.pipeline.social_auth.auth_allowed',
-    'social_core.pipeline.social_auth.social_user',
-    'social_core.pipeline.user.get_username',  # default fallback
-    'Account.pipeline.create_username_from_names',  # 👈 add this
-    'social_core.pipeline.user.create_user',
-    'social_core.pipeline.social_auth.associate_user',
-    'social_core.pipeline.social_auth.load_extra_data',
-    'social_core.pipeline.user.user_details',
-)
+# Allow login with username OR email
+ACCOUNT_LOGIN_METHODS = {"username", "email"}
+# Signup form required fields (the * means "required")
+ACCOUNT_SIGNUP_FIELDS = ["email*", "username*", "password1*", "password2*"]
 
-# Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': config('GOOGLE_CLIENT_ID', default=""),
+            'secret': config('GOOGLE_SECRET_KEY', default="")
+        },
+        'SCOPE': ['profile','email',],
+        'AUTH_PARAMS': {'access_type': 'online',},
+        'METHOD': 'oauth2',
+        'VERIFIED_EMAIL': True
+    }
+}
+SOCIALACCOUNT_LOGIN_ON_GET = True
 
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'Asia/Kolkata'
-
 USE_I18N = True
-
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
-
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
@@ -191,13 +191,7 @@ MEDIA_URL = '/media/'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-LOGIN_URL = '/accounts/login/'
-LOGIN_REDIRECT_URL = '/home/'
-LOGOUT_REDIRECT_URL = '/accounts/welcome/'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'

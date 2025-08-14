@@ -25,6 +25,6 @@ urlpatterns = [
     path('', root_view, name='root'),
     path('accounts/', include('Account.urls')),
     path('', include('ChatApp.urls')),
-    path('oauth/', include('social_django.urls', namespace='social')),
+    path('accounts/', include('allauth.urls')),
 
 ]  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

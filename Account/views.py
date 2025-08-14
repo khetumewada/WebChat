@@ -1,5 +1,4 @@
 import random
-
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
@@ -77,28 +76,16 @@ def register_view(request):
             email_verified = True
 
         if form.is_valid() and not otp_error:
+            username = form.cleaned_data.get('username').strip()
+
+            if User.objects.filter(username=username).exists():
+                form.add_error('username', 'This username is already taken.')
+                return render(request, 'account/register.html', {
+                    'form': form,
+                    'otp_error': otp_error
+                })
+
             user = form.save(commit=False)
-
-            # Check if user came from Google/social
-            if request.POST.get('is_google_signup'):
-
-                # Generate username from first_name + last_name
-                first_name = form.cleaned_data.get('first_name', '').strip().lower()
-                last_name = form.cleaned_data.get('last_name', '').strip().lower()
-                base_username = (first_name + last_name).replace(" ", "") or "user"
-
-                username = base_username
-                counter = 1
-                while User.objects.filter(username=username).exists():
-                    username = f"{base_username}{counter}"
-                    counter += 1
-            else:
-                # Normal form signup: use the username entered by the user
-                username = form.cleaned_data.get('username').strip()
-                if User.objects.filter(username=username).exists():
-                    form.add_error('username', 'This username is already taken.')
-                    return render(request, 'account/register.html', {'form': form, 'otp_error': otp_error})
-
             user.username = username
             user.set_password(form.cleaned_data['password1'])
             user.save()

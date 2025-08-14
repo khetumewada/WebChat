@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load socialaccount %}
 {% block title %}Sign In - WebChat{% endblock %}
 
 {% block content %}
@@ -54,7 +54,7 @@
                     <p style="color: #667781; font-size: 13px;">Don't have an account? <a
                             href="{% url 'account:register' %}">Create one here</a></p>
                 </div>
-                <a href="{% url 'social:begin' 'google-oauth2' %}" class="btn-google"
+                <a href="{% provider_login_url 'google' %}" class="btn-google"
                    style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;margin:20px 0 8px 0;background:#fff;color:#3b4371;border:1.5px solid #dde9fc;border-radius:6px;padding:12px 0;font-size:15px;font-weight:500;box-shadow:0 2px 10px rgba(102,126,234,0.08);transition:box-shadow 0.19s, border 0.18s;text-decoration:none;outline:none;"
                    tabindex="0"
                    aria-label="Sign up with Google">

@@ -1,3 +1,4 @@
+{% load socialaccount %}
 <div id="form-wrapper"
      style="max-width: 520px; margin: 40px auto; border: 1px solid #e0e0e0; border-top: 4px solid #00a884; border-radius: 12px; background: #fff; box-shadow: 0 8px 32px rgba(0,0,0,0.06); padding: 32px;">
     <form method="post"
@@ -110,7 +111,7 @@
             </p>
         </div>
 
-        <a href="{% url 'social:begin' 'google-oauth2' %}"
+        <a href="{% provider_login_url 'google' %}"
            class="btn-google"
            style="
             display: flex;
