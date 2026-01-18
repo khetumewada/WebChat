@@ -1,0 +1,30 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.venv/
+env/
+venv/
+ENV/
+
+# Secrets and Databases
+.env
+db.sqlite3
+
+# Logs
+*.log
+celery_tasks.log
+
+# Media and Static (usually managed outside VCS in production)
+media/
+# static/  <-- Uncomment if you want to ignore collected static files
+
+# IDEs
+.idea/
+.vscode/
+
+# OS generated files
+.DS_Store
+Thumbs.db

@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Welcome to MailNotify{% endblock %}
+
+{% block content %}
+    <div class="min-h-screen flex items-center justify-center bg-gray-50 p-6">
+        <div class="bg-white p-12 rounded-2xl shadow-lg max-w-lg w-full border border-gray-200 text-center">
+
+            <!-- Logo -->
+            <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-teal-400 rounded-full flex items-center justify-center text-4xl text-white mx-auto mb-8 shadow-md">
+                ✉️
+            </div>
+
+            <!-- Heading -->
+            <h1 class="text-3xl font-bold text-gray-900 mb-4">WebChat</h1>
+
+            <!-- Description -->
+            <p class="text-gray-600 mb-8">
+                Connect with friends and family through secure, real-time messaging with our modern interface.
+            </p>
+
+            <!-- Buttons -->
+            <div class="flex flex-wrap justify-center gap-4 mb-10">
+                <a href="{% url 'Account:register' %}"
+                   class="px-6 py-3 bg-gradient-to-br from-green-500 to-teal-400 text-white font-semibold rounded-lg shadow hover:scale-105 transition-transform">
+                    Get Started
+                </a>
+                <a href="{% url 'Account:login' %}"
+                   class="px-6 py-3 border-2 border-green-500 text-green-500 font-semibold rounded-lg hover:bg-green-500 hover:text-white transition">
+                    Sign In
+                </a>
+            </div>
+
+            <!-- Features -->
+            <div class="border-t border-gray-200 pt-8">
+                <h3 class="text-lg font-semibold text-gray-900 mb-6">Features</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-left">
+
+                    <div class="p-4 rounded-lg bg-green-50 flex flex-col items-start">
+                        <div class="text-2xl mb-2 text-green-500">⚡</div>
+                        <h4 class="font-semibold text-gray-900 mb-1">Real-time</h4>
+                        <p class="text-gray-600 text-sm">Instant messaging</p>
+                    </div>
+
+                    <div class="p-4 rounded-lg bg-blue-50 flex flex-col items-start">
+                        <div class="text-2xl mb-2 text-blue-500">🔒</div>
+                        <h4 class="font-semibold text-gray-900 mb-1">Secure</h4>
+                        <p class="text-gray-600 text-sm">Private conversations</p>
+                    </div>
+
+                    <div class="p-4 rounded-lg bg-red-50 flex flex-col items-start">
+                        <div class="text-2xl mb-2 text-red-500">📱</div>
+                        <h4 class="font-semibold text-gray-900 mb-1">Responsive</h4>
+                        <p class="text-gray-600 text-sm">Works on all devices</p>
+                    </div>
+
+                    <div class="p-4 rounded-lg bg-yellow-50 flex flex-col items-start">
+                        <div class="text-2xl mb-2 text-yellow-400">👥</div>
+                        <h4 class="font-semibold text-gray-900 mb-1">Easy to Use</h4>
+                        <p class="text-gray-600 text-sm">Simple, intuitive interface</p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

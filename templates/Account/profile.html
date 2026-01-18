@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Profile{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/Account/common_auth.css' %}">
+    <link rel="stylesheet" href="{% static 'css/Account/profile.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="profile-page">
+
+        <div class="profile-card profile-grid">
+
+            <!-- LEFT AVATAR PANEL -->
+            <div class="profile-left">
+
+                {% if user.profile.profile_image %}
+                    <img src="{{ user.profile.profile_image.url }}" class="profile-avatar">
+                {% else %}
+                    <div class="profile-avatar initials">
+                        {{ user.profile.get_avatar_initials }}
+                    </div>
+                {% endif %}
+
+                <h3>{{ user.get_full_name|default:user.username }}</h3>
+                <p>@{{ user.username }}</p>
+
+            </div>
+
+            <!-- RIGHT FORM PANEL -->
+
+            <div class="profile-right">
+
+                <div class="profile-form-card">
+                    <h2 class="profile-heading">Profile Settings</h2>
+                    {% if messages %}
+                        <div class="form-messages">
+                            {% for message in messages %}
+                                <div class="form-message message-{{ message.tags }}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <form action="{% url 'Account:profile' %}" method="post" enctype="multipart/form-data"
+                          id="profileForm">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="profile-image-input">Profile Image</label>
+
+                            <div class="image-upload-wrapper">
+                                <input type="file"
+                                       name="profile_image"
+                                       id="profile-image-input"
+                                       accept="image/*">
+
+                                <button type="button"
+                                        id="clear-img-btn"
+                                        class="btn-clear-img"
+                                        onclick="clearProfileImage()"
+                                        {% if not form.instance.profile_image %}style="display:none"{% endif %}>
+                                    Clear
+                                </button>
+
+                                <input type="hidden"
+                                       name="clear_image"
+                                       id="clear-image-field"
+                                       value="0">
+                            </div>
+                        </div>
+
+                        <!-- NAME -->
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label>First Name</label>
+                                <input type="text" name="first_name" placeholder="First Name"
+                                       value="{{ user.first_name|default:'' }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Last Name</label>
+                                <input type="text" name="last_name" placeholder="Last Name"
+                                       value="{{ user.last_name|default:'' }}">
+                            </div>
+                        </div>
+
+                        <!-- EMAIL -->
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" value="{{ user.email }}" readonly>
+                        </div>
+
+                        <!-- PHONE -->
+                        <div class="form-group">
+                            <label>Phone</label>
+                            <input type="text" name="phone_number" placeholder="Your phone number"
+                                   value="{{ form.phone_number.value|default:'' }}">
+                        </div>
+
+                        <!-- BIO -->
+                        <div class="form-group">
+                            <label>Bio</label>
+                            <textarea name="bio" rows="4"
+                                      placeholder="Tell us about yourself...">{{ form.bio.value|default:'' }}</textarea>
+                        </div>
+
+                        <!-- ACTIONS -->
+                        <div class="actions-row">
+                            <a href="{% url 'ChatApp:home' %}" class="btn-cancel">
+                                Cancel
+                            </a>
+
+                            <button type="submit" class="submit-btn">
+                                Save Changes
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+{% endblock %}
+{% block script %}
+    <script>
+        const fileInput = document.getElementById("profile-image-input");
+        const clearBtn = document.getElementById("clear-img-btn");
+        const clearField = document.getElementById("clear-image-field");
+
+        function clearProfileImage() {
+            // Mark image to be removed on submit
+            clearField.value = "1";
+
+            // Clear selected file
+            fileInput.value = "";
+
+            // Update button UI
+            clearBtn.innerText = "Cleared";
+            clearBtn.disabled = true;
+
+            // Visual feedback on avatar
+            const avatar = document.querySelector(".profile-avatar");
+            if (avatar) avatar.style.opacity = "0.3";
+        }
+
+        // 🔥 IMPORTANT: reset clear state if user selects a new image
+        fileInput.addEventListener("change", function () {
+            if (fileInput.files.length > 0) {
+                clearField.value = "0";          // cancel clear
+                clearBtn.style.display = "inline-flex";
+                clearBtn.disabled = false;
+                clearBtn.innerText = "Clear";
+
+                const avatar = document.querySelector(".profile-avatar");
+                if (avatar) avatar.style.opacity = "1";
+            }
+        });
+
+        // Auto-dismiss messages
+        setTimeout(() => {
+            document.querySelectorAll(".form-message").forEach(msg => {
+                msg.style.transition = "opacity 0.4s";
+                msg.style.opacity = "0";
+                setTimeout(() => msg.remove(), 300);
+            });
+        }, 3000);
+    </script>
+{% endblock %}

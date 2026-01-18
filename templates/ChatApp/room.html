@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load chat_extras %}
+
+{% block title %}Chat - WebChat{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/ChatApp/common_chat.css' %}">
+    <link rel="stylesheet" href="{% static 'css/ChatApp/room.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="chat-container">
+
+        {% include "ChatApp/common.html" with is_home_page=False active_chat_id=chat.id %}
+
+        <div class="chat-area">
+
+            <div id="connectionStatus" class="connection-status connecting">
+                Connecting...
+            </div>
+
+            <div class="chat-header">
+                <a href="{% url 'ChatApp:home' %}" class="chat-back-btn">←</a>
+
+                {% if chat.chat_type == 'private' %}
+                    {% with other_user=chat|get_other_participant:current_user %}
+                        {% if other_user %}
+                            <div class="contact-avatar" style="background: {{ other_user.id|get_avatar_color }};">
+                                {% if other_user.profile.profile_image %}
+                                    <img src="{{ other_user.profile.profile_image.url }}" alt="">
+                                {% else %}
+                                    <span class="avatar-text">
+                                    {{ other_user.profile.get_avatar_initials|default:other_user.username|slice:":2"|upper }}
+                                </span>
+                                {% endif %}
+                                {% if other_user.profile.is_online %}
+                                    <div class="online-indicator"></div>
+                                {% endif %}
+                            </div>
+
+                            <div class="chat-user-info">
+                                <div class="chat-user-name">
+                                    {{ other_user.get_full_name|default:other_user.username }}
+                                </div>
+                                <div class="chat-user-status" id="userStatus">
+                                    {% if other_user.profile.is_online %}
+                                        Online
+                                    {% else %}
+                                        Last seen {{ other_user.profile.last_seen|timesince }} ago
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+                {% endif %}
+
+                <div class="chat-actions">
+                    <div class="chat-search-wrapper">
+                        <div class="search-wrapper">
+                            <input type="text"
+                                   class="search-box"
+                                   placeholder="Search messages..."
+                                   id="chatSearchInput"
+                                   autocomplete="off">
+                            <div id="chatSearchResults" class="search-results"></div>
+                        </div>
+                    </div>
+
+                    <button class="action-btn" id="dropdownToggleBtn">⋮</button>
+
+                    <div id="chatDropdownMenu" class="dropdown-menu chat-dropdown">
+                        <div class="dropdown-header">Chat Options</div>
+                        <button class="dropdown-item">Mute Chat</button>
+                        <button class="dropdown-item danger">Report User</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="messages-container" id="messagesContainer">
+                {% for message in messages %}
+                    <div class="message {% if message.sender == current_user %}sent{% else %}received{% endif %}"
+                         data-timestamp="{{ message.timestamp.isoformat }}">
+                        <div class="message-text">{{ message.content }}</div>
+                        <div class="message-time">{{ message.timestamp|date:"g:i A" }}</div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="typing-indicator" id="typingIndicator"></div>
+
+            <div class="message-input-container">
+                <input type="text"
+                       class="message-input"
+                       placeholder="Type a message..."
+                       id="messageInput">
+                <button class="send-btn" id="sendBtn" title="Send"></button>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        const chatId = {{ chat.id }};
+        const currentUserId = {{ current_user.id }};
+    </script>
+    <script src="{% static 'js/room.js' %}"></script>
+    <script src="{% static 'js/common_chat.js' %}"></script>
+{% endblock %}
+
+

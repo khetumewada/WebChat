@@ -1,0 +1,69 @@
+.otp-row {
+    display: flex;
+    gap: 8px;
+}
+
+.otp-row input {
+    flex: 1;
+}
+
+#send-otp-btn {
+    height: 44px;
+    min-width: 120px;
+    border-radius: 8px;
+    border: 1px solid var(--primary);
+    background: #eafaf6;
+    color: var(--primary-dark);
+    font-weight: 700;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    position: relative;
+    overflow: hidden;
+    transition: all .2s ease;
+}
+
+#send-otp-btn:hover:not(:disabled) {
+    background: #d9f5ec;
+}
+
+/* Disabled state */
+#send-otp-btn:disabled {
+    cursor: not-allowed;
+    opacity: .8;
+}
+
+/* Button Text */
+#send-otp-btn .btn-text {
+    transition: opacity .15s ease;
+}
+
+/* Spinner */
+#send-otp-btn .btn-loader {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(0,0,0,.2);
+    border-top-color: var(--primary-dark);
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+    opacity: 0;
+}
+
+/* Loading State */
+#send-otp-btn.loading .btn-text {
+    opacity: 0;
+}
+
+#send-otp-btn.loading .btn-loader {
+    opacity: 1;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+.info-text.success { color: var(--primary); }
+.info-text.error { color: #d32f2f; }

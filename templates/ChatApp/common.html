@@ -1,0 +1,136 @@
+{% load chat_extras %}
+<div class="contacts-sidebar" id="contactsSidebar">
+
+    <div class="sidebar-header">
+        <div class="user-profile">
+            {% with userprofile=current_user.profile %}
+                {% if userprofile.profile_image %}
+                    <div class="avatar-img">
+                        <img src="{{ userprofile.profile_image.url }}" alt="Profile">
+                    </div>
+                {% else %}
+                    <div class="profile-pic">
+                        {{ userprofile.get_avatar_initials }}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <div>
+                <div class="header-name">
+                    {{ current_user.get_full_name|default:current_user.username }}
+                </div>
+                <div class="header-username">
+                    @{{ current_user.username }}
+                </div>
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <button class="action-btn" id="menuBtn" title="Menu">⋮</button>
+        </div>
+    </div>
+
+    <div id="userMenu" class="dropdown-menu dropdown-user">
+        <div class="dropdown-header">
+            <div class="dropdown-name">
+                {{ current_user.get_full_name|default:current_user.username }}
+            </div>
+            <div class="dropdown-username">
+                @{{ current_user.username }}
+            </div>
+        </div>
+
+        <div class="dropdown-body">
+            <a href="{% url 'Account:profile' %}?next={{ request.path }}" class="dropdown-item">
+                <span class="dropdown-icon">👤</span> Profile Settings
+            </a>
+
+            <div class="dropdown-divider"></div>
+
+            <form action="{% url 'Account:logout' %}" method="post" style="margin: 0;">
+        {% csrf_token %}
+        <button type="submit" class="dropdown-item danger">
+            <span class="dropdown-icon">🚪</span> Logout
+        </button>
+    </form>
+
+        </div>
+    </div>
+
+    <div class="search-container">
+        <div class="search-wrapper">
+            <input type="text"
+                   class="search-box"
+                   placeholder="Search users to chat..."
+                   id="searchInput"
+                   autocomplete="off">
+            <div id="searchResults" class="search-results"></div>
+        </div>
+    </div>
+
+    <div class="contacts-list" id="contactsList">
+        {% for chat in chats %}
+            {% if chat.chat_type == 'private' %}
+                {% with other_user=chat|get_other_participant:current_user %}
+                    {% if other_user %}
+                        <a href="{% url 'ChatApp:room' chat.id %}"
+                           class="contact-item {% if active_chat_id == chat.id %}active{% endif %}">
+
+                            <div class="contact-avatar" style="background: {{ other_user.id|get_avatar_color }};">
+                                {% if other_user.profile.profile_image %}
+                                    <img src="{{ other_user.profile.profile_image.url }}" alt="">
+                                {% else %}
+                                    <span class="avatar-text">
+                                        {{ other_user.profile.get_avatar_initials|default:other_user.username|slice:":2"|upper }}
+                                    </span>
+                                {% endif %}
+                                {% if other_user.profile.is_online %}
+                                    <div class="online-indicator"></div>
+                                {% endif %}
+                            </div>
+
+                            <div class="contact-info">
+                                <div class="contact-name">
+                                    {{ other_user.get_full_name|default:other_user.username }}
+                                </div>
+                                <div class="contact-last-message">
+                                    {% with last_message=chat.get_last_message %}
+                                        {% if last_message %}
+                                            {% if last_message.sender == current_user %}
+                                                You: {{ last_message.content|truncatechars:30 }}
+                                            {% else %}
+                                                {{ last_message.content|truncatechars:35 }}
+                                            {% endif %}
+                                        {% else %}
+                                            Start a conversation...
+                                        {% endif %}
+                                    {% endwith %}
+                                </div>
+                            </div>
+
+                            <div class="contact-meta">
+                                {% with last_message=chat.get_last_message %}
+                                    {% if last_message %}
+                                        <div class="message-time">
+                                            {{ last_message.timestamp|format_message_time }}
+                                        </div>
+                                    {% endif %}
+                                {% endwith %}
+                            </div>
+                        </a>
+                    {% endif %}
+                {% endwith %}
+            {% endif %}
+            {% empty %}
+            <div style="padding: 24px; text-align: center; color: var(--text-secondary);">
+                <p>No conversations yet.</p>
+            </div>
+        {% endfor %}
+
+        {% if not is_home_page %}
+            <a href="{% url 'ChatApp:home' %}" class="contact-item back-home">
+                ← Back to Home
+            </a>
+        {% endif %}
+    </div>
+</div>

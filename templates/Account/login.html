@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Sign In | WebChat{% endblock %}
+{% load static %}
+{% block content %}
+    <link rel="stylesheet" href="{% static 'css/Account/common_auth.css' %}">
+    <link rel="stylesheet" href="{% static 'css/Account/login.css' %}">
+
+    <div class="page">
+        <div class="card">
+
+            <!-- Logo + Heading -->
+            <div class="logo">
+                <div class="logo-icon">💬</div>
+                <h2>Welcome Back</h2>
+                <p>Sign in to continue with WebChat</p>
+            </div>
+
+            <!-- Messages -->
+            {% if messages %}
+                <div class="form-messages">
+                    {% for message in messages %}
+                        <div class="form-message {% if message.tags == 'success' %}message-success{% else %}message-error{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- Login Form -->
+            <form method="post" action="{% url 'Account:login' %}">
+                {% csrf_token %}
+
+                <!-- Username / Email -->
+                <div class="form-group">
+                    <label for="username_or_email">Username or Email</label>
+                    <input
+                            type="text"
+                            id="username_or_email"
+                            name="username_or_email"
+                            value="{{ form.username_or_email.value|default:'' }}"
+                            placeholder="Enter your username or email"
+                            required
+                            autofocus>
+
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            required
+                    >
+                </div>
+
+                <!-- Forgot Password -->
+                <div style="text-align:right; margin-bottom: 8px;" class="footer-text">
+                    <a href="{% url 'Account:password_reset' %}">
+                        Forgot password?
+                    </a>
+                </div>
+
+                <!-- Submit -->
+                <button type="submit" class="submit-btn">
+                    Sign In
+                </button>
+            </form>
+
+            <!-- Footer -->
+            <div class="footer-text">
+                Don’t have an account?
+                <a href="{% url 'Account:register' %}">Create account</a>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Auto-dismiss messages
+        setTimeout(() => {
+            document.querySelectorAll(".form-message").forEach(msg => {
+                msg.style.transition = "opacity 0.4s";
+                msg.style.opacity = "0";
+                setTimeout(() => msg.remove(), 300);
+            });
+        }, 3000);
+    </script>
+
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load chat_extras %}
+
+{% block title %}WebChat - Home{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/ChatApp/common_chat.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="chat-container">
+
+    {% include "ChatApp/common.html" with is_home_page=True %}
+
+    <div class="home-welcome">
+        <div class="home-icon">💬</div>
+
+        <h1 class="home-title">Welcome to WebChat</h1>
+
+        <p class="home-subtitle">
+            Send and receive messages in real-time.<br>
+            <strong>Search for users</strong> on the left to start a conversation.
+        </p>
+
+        <div class="home-card">
+            <h3 class="home-card-title">Quick Tips</h3>
+
+            <div class="home-tip">
+                <span class="tip-dot"></span>
+                <span>Use the search bar to find new users</span>
+            </div>
+            <div class="home-tip">
+                <span class="tip-dot"></span>
+                <span>Click on a contact to start chatting</span>
+            </div>
+            <div class="home-tip">
+                <span class="tip-dot"></span>
+                <span>Messages are delivered instantly</span>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% if messages %}
+<div class="home-alert-wrapper">
+    {% for message in messages %}
+        <div class="home-alert {{ message.tags }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'js/common_chat.js' %}"></script>
+{% endblock %}
