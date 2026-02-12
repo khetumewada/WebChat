@@ -20,19 +20,19 @@ services:
       "
 
     volumes:
-      - WebChat_staticfiles:/app/staticfiles
-      - WebChat_media:/app/media
+      - staticfiles:/app/staticfiles
+      - media:/app/media
 
   db:
     image: postgres:16-alpine
     env_file:
       - ./.env
     volumes:
-      - WebChat_postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
 
 
   celery:
-    build: .g
+    build: .
     command: celery -A WebChat worker -l info
     volumes:
       - .:/app
@@ -44,8 +44,11 @@ services:
 
   redis:
     image: redis:7-alpine
+    volumes:
+      - redis_data:/data
 
 volumes:
-  WebChat_postgres_data:
-  WebChat_media:
-  WebChat_staticfiles:
+  postgres_data:
+  media:
+  staticfiles:
+  redis_data:
