@@ -36,9 +36,12 @@ jobs:
       - name: Wait for services
         run: sleep 20
 
+      - name: Run tests
+        run: docker compose exec -T web python manage.py test --settings=WebChat.settings_test
+
       - name: Show logs on failure
         if: failure()
-        run: docker compose logs
+        run: docker compose logs --tail=200 web
 
       - name: Stop services
         if: always()
