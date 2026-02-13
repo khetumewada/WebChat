@@ -12,11 +12,6 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
-    strategy:
-      max-parallel: 5
-      matrix:
-        python-version: [3.9, 3.10, 3.11, 3.12, 3.13]
-
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -31,6 +26,9 @@ jobs:
 
       - name: Build Images
         run: docker compose build
+
+      - name: Create .env file
+        run: echo "${{ secrets.WEBCHAT }}" > .env
 
       - name: Start services
         run: docker compose up -d
