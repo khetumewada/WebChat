@@ -2,6 +2,14 @@ from .settings import *
 
 DEBUG = False
 
+# Use SQLite for fast, dependency-free testing in CI
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": ":memory:",
+    }
+}
+
 # Use in-memory email backend (safe + testable)
 EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
 
@@ -29,3 +37,7 @@ CHANNEL_LAYERS = {
 PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.MD5PasswordHasher",
 ]
+
+# Celery runs tasks inline — no broker/worker needed in CI
+CELERY_TASK_ALWAYS_EAGER = True
+CELERY_TASK_EAGER_PROPAGATES = True

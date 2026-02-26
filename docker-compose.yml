@@ -1,16 +1,18 @@
 services:
   web:
-    container_name: WebChat
+    container_name: webchat
     build:
       dockerfile: Dockerfile
       context: .
+    image: webchat:latest
     ports:
       - "8000:8000"
     env_file:
       - ./.env
+    restart: unless-stopped
     depends_on:
-      - db
-      - redis
+      redis:
+        condition: service_healthy
 
     command: >
       sh -c "
@@ -23,32 +25,30 @@ services:
       - staticfiles:/app/staticfiles
       - media:/app/media
 
-  db:
-    image: postgres:16-alpine
-    env_file:
-      - ./.env
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-
-
   celery:
-    build: .
+    image: webchat:latest
     command: celery -A WebChat worker -l info
-    volumes:
-      - .:/app
+    restart: unless-stopped
     env_file:
       - ./.env
     depends_on:
-      - redis
-
+      redis:
+        condition: service_healthy
+      web:
+        condition: service_started
 
   redis:
     image: redis:7-alpine
+    restart: unless-stopped
     volumes:
       - redis_data:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
-  postgres_data:
   media:
   staticfiles:
   redis_data:

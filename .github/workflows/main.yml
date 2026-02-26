@@ -14,27 +14,24 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
-
-#      - name: Set up Python ${{ matrix.python-version }}
-#        uses: actions/setup-python@v5
-#        with:
-#          python-version: ${{ matrix.python-version }}
+        uses: actions/checkout@v4
 
       - name: Set up Docker
         uses: docker/setup-buildx-action@v3
 
-      - name: Build Images
-        run: docker compose build
-
       - name: Create .env file
         run: echo "${{ secrets.WEBCHAT }}" > .env
+
+      - name: Build Images
+        run: docker compose build
 
       - name: Start services
         run: docker compose up -d
 
-      - name: Wait for services
-        run: sleep 20
+      - name: Wait for services to be healthy
+        run: |
+          echo "Waiting for services to be healthy..."
+          sleep 20
 
       - name: Run tests
         run: docker compose exec -T web python manage.py test --settings=WebChat.settings_test
